@@ -1,0 +1,24 @@
+{
+  "name": "flickr-slideshow",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components"
+  ],
+  "main": "flickr-slideshow.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4",
+    "core-ajax": "Polymer/core-ajax#~0.5.6"
+  },
+  "homepage": "https://github.com/hubgit/flickr-slideshow",
+  "_release": "510798b660",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "510798b66042d6ea680a231441688020599517e4"
+  },
+  "_source": "git://github.com/hubgit/flickr-slideshow.git",
+  "_target": "master",
+  "_originalSource": "hubgit/flickr-slideshow",
+  "_direct": true
+}
