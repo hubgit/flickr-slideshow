@@ -42,24 +42,29 @@ Element providing a slideshow of images from Flickr.
         this.loadedPhotos = [];
       },
       handleResponse: function(event, details) {
+        this.pages = details.response.photos.pages;
+        console.log(this.pages, 'pages');
+
         details.response.photos.photo.forEach(function(photo) {
           this.loadedPhotos.push(photo);
         }.bind(this));
 
-        if (this.page === 0) {
+        if (!this.sliceInterval) {
           this.slice();
-          window.setInterval(this.slice.bind(this), this.delay);
+          this.sliceInterval = window.setInterval(this.slice.bind(this), this.delay);
         }
       },
       slice: function() {
         this.photos = this.loadedPhotos.slice(this.index, this.index + 2);
-        this.index = Math.min(this.index + 1, this.loadedPhotos.length);
-        console.log('show image', this.index);
+        this.index = (this.index + 1) % this.loadedPhotos.length;
+        console.log('show image', this.index, 'of', this.loadedPhotos.length);
 
         // load more when halfway through the last page
         if (this.index === Math.ceil(this.loadedPhotos.length - (this.perPage / 2))) {
-          this.page++;
-          console.log('load page', this.page);
+          if (this.page < this.pages) {
+            this.page++;
+            console.log('load page', this.page);
+          }
         }
       }
     });
