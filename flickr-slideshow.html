@@ -1,0 +1,67 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<!--
+Element providing a slideshow of images from Flickr.
+
+##### Example
+
+    <flickr-slideshow></flickr-slideshow>
+
+@element flickr-slideshow
+@blurb Element providing a slideshow of images from Flickr.
+@status alpha
+@homepage https://github.com/hubgit/flickr-slideshow
+-->
+<polymer-element name="flickr-slideshow">
+  <template>
+    <link rel="stylesheet" href="flickr-slideshow.css">
+
+    <template bind="{{ photos[0] }}">
+      <a href="https://www.flickr.com/photos/{{ owner }}/{{ id }}" target="_blank">flickr</a>
+    </template>
+
+    <template repeat="{{ photos }}">
+      <img src="https://farm{{ farm }}.staticflickr.com/{{ server }}/{{ id }}_{{ secret }}_b.jpg">
+    </template>
+
+    <core-ajax auto
+      url="http://www.macropus.org/flickr-interesting/"
+      params="{{ { page: page, per_page: perPage } }}"
+      handleAs="json"
+      on-core-response="{{ handleResponse }}"></core-ajax>
+  </template>
+  <script>
+    Polymer({
+      index: 0,
+      page: 0,
+      perPage: 10,
+      delay: 5000,
+      ready: function() {
+        this.photos = [];
+        this.loadedPhotos = [];
+      },
+      handleResponse: function(event, details) {
+        details.response.photos.photo.forEach(function(photo) {
+          this.loadedPhotos.push(photo);
+        }.bind(this));
+
+        if (this.page === 0) {
+          this.slice();
+          window.setInterval(this.slice.bind(this), this.delay);
+        }
+      },
+      slice: function() {
+        this.photos = this.loadedPhotos.slice(this.index, this.index + 2);
+        this.index = Math.min(this.index + 1, this.loadedPhotos.length);
+        console.log('show image', this.index);
+
+        // load more when halfway through the last page
+        if (this.index === Math.ceil(this.loadedPhotos.length - (this.perPage / 2))) {
+          this.page++;
+          console.log('load page', this.page);
+        }
+      }
+    });
+  </script>
+</polymer-element>
